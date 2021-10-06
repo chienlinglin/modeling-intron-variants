@@ -308,7 +308,7 @@ coef(cv_lasso, s = "lambda.min") %>%
   top_n(15, wt = abs(coef)) %>% 
   ggplot(aes(coef, reorder(var, coef))) +
   geom_point() +
-  ggtitle("Top 15 influential variables in non-ag splicing efficiency(wt_eff_add)") +
+  ggtitle("Top 15 influential variables in non-ag splicing efficiency(no_wt_eff_add)") +
   xlab("Coefficient") +
   ylab(NULL)
 dev.off()
