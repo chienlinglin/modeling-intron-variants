@@ -6,16 +6,15 @@ library(glmnet)   # implementing regularized regression approaches
 library(dplyr)    # basic data manipulation procedures
 library(ggplot2)  # plotting
 
-setwd("/Volumes/TOSHIBA EXT/yiting/Hung Lun/home2_cllin_20191223/aligncomrev_0707/fisher/summarize/gtag_only/")
 
 ####### new svm file
-all <- read.csv(file = "/Volumes/TOSHIBA EXT/for_server/new_svm_0719/hunglun_gtag_only_0_1.5_2-fold_candidates_maxent_snp_exct_cons7_alt_U2_novelGC_folds_motif5s_len_open_count_dG_pbp_dsvm.csv",row.names = 1,stringsAsFactors = F)
+all <- read.csv(file = "hunglun_gtag_only_0_1.5_2-fold_candidates_maxent_snp_exct_cons7_alt_U2_novelGC_folds_motif5s_len_open_count_dG_pbp_dsvm.csv",row.names = 1,stringsAsFactors = F)
 
 ### remove multiple branchpoints
 all <- all[-which(is.na(all$wt.mt_3ss_distance.right.)),]
 
 ### remove objects with read counts less than 100
-over100 <- read.csv(file = "Recheck_100count/hunglun_wt.mt.count_recheck_100_count.csv",row.names = 1)
+over100 <- read.csv(file = "hunglun_wt.mt.count_recheck_100_count.csv",row.names = 1)
 over100$wt.mt <- NA
 over100$wt.mt[which(over100$wt_count==">100" & over100$mt_count==">100")] <- TRUE  # 4215
 all <- all[-which(all$mt %in% over100$mt[which(is.na(over100$wt.mt))]),]
@@ -92,7 +91,7 @@ all$simp.variant_class <- factor(all$simp.variant_class, levels= c("undefined", 
                                                                    "Functional evidence", "Pathogenic/Likely pathogenic"))
 all$Anumber.10[all$Anumber.10 %in% NA] <- "no"
 
-fil5per <- read.csv(file = "Check_count_percentage/filter_wt.mt_unspliced.noncanonical_5_percent.csv",row.names = 1)
+fil5per <- read.csv(file = "filter_wt.mt_unspliced.noncanonical_5_percent.csv",row.names = 1)
 all[which(all$mt %in% fil5per[,1]),48] <- NA
 
 
@@ -119,10 +118,7 @@ remove <- c(which(str_detect(colnames(all1),pattern = "novel")))
 
 # remove building library related information and some RNA-seq result
 remove1 <- c(1:22,24,26:51,62)
-# test <- data.frame(setdiff(colnames(all1),colnames(allf)),which(colnames(all1) %in% setdiff(colnames(all1),colnames(allf))))
-# test2 <- data.frame(setdiff(colnames(allf),colnames(all1)),which(colnames(allf) %in% setdiff(colnames(allf),colnames(all1))))
 
-#View(test)
 # wt have no mt related factors and read counts
 remove2 <- c(55:60,66:72,75,76,78:80,82:86,88,90,303,304,316,317,319,320,509,510,512:514,516:518,520:522,524:526,528:530,532,533,535:557)
 
@@ -186,7 +182,7 @@ eval_results(eff_test_y, predictions_test, eff_test_x)
 #1 0.6366962 0.2362514
 
 coef(cv_lasso, s="lambda.min")
-write.csv(as.matrix(coef(cv_lasso, s="lambda.min")),"wt_eff_model_coef_0519.csv")
+write.csv(as.matrix(coef(cv_lasso, s="lambda.min")),"wt_eff_model_coef.csv")
 
 coef(cv_lasso, s = "lambda.min") %>% 
   as.matrix() %>% 
@@ -284,5 +280,5 @@ eval_results(eff_test_y, predictions_test, eff_test_x)
 
 ### obtain coefficient
 coef(cv_lasso, s="lambda.min")
-write.csv(as.matrix(coef(cv_lasso, s="lambda.min")),"wt_eff_model_coef_nostd2_0812.csv")
+write.csv(as.matrix(coef(cv_lasso, s="lambda.min")),"wt_eff_model_coef_nostd.csv")
 

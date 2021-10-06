@@ -6,17 +6,11 @@ library(glmnet)   # implementing regularized regression approaches
 library(dplyr)    # basic data manipulation procedures
 library(ggplot2)  # plotting
 
-setwd("/Volumes/TOSHIBA EXT/yiting/Hung Lun/home2_cllin_20191223/aligncomrev_0707/fisher/summarize/gtag_only/")
-
 ####### new svm file
-all <- read.csv(file = "/Volumes/TOSHIBA EXT/for_server/new_svm_0719/hunglun_gtag_only_0_1.5_2-fold_candidates_maxent_snp_exct_cons7_alt_U2_novelGC_folds_motif5s_len_open_count_dG_pbp_dsvm.csv",row.names = 1,stringsAsFactors = F)
-
-## from dr.lin added attributes
-#all <- read.csv(file = "by_cllin/20201026_factors_for_glm/hunglun_gtag_only_0_1.5_2-fold_candidates_maxent_svm_snp_ct_cons_alt_U2_novelgc_fold_corrected.csv",row.names = 1,stringsAsFactors = F)
-#all <- all[-which(is.na(all$wt.mt_3ss_distance.right.)),]
+all <- read.csv(file = "hunglun_gtag_only_0_1.5_2-fold_candidates_maxent_snp_exct_cons7_alt_U2_novelGC_folds_motif5s_len_open_count_dG_pbp_dsvm.csv",row.names = 1,stringsAsFactors = F)
 
 ### remove objects with read counts less than 100
-over100 <- read.csv(file = "Recheck_100count/hunglun_wt.mt.count_recheck_100_count.csv",row.names = 1,stringsAsFactors = F)
+over100 <- read.csv(file = "hunglun_wt.mt.count_recheck_100_count.csv",row.names = 1,stringsAsFactors = F)
 over100$wt.mt <- NA
 over100$wt.mt[which(over100$wt_count==">100" & over100$mt_count==">100")] <- TRUE  # 4215
 all <- all[-which(all$mt %in% over100$mt[which(is.na(over100$wt.mt))]),]
@@ -93,14 +87,11 @@ all$simp.variant_class <- factor(all$simp.variant_class, levels= c("undefined", 
                                                                    "Functional evidence", "Pathogenic/Likely pathogenic"))
 all$Anumber.10[all$Anumber.10 %in% NA] <- "no"
 
-fil5per <- read.csv(file = "Check_count_percentage/filter_wt.mt_unspliced.noncanonical_5_percent.csv",row.names = 1)
+fil5per <- read.csv(file = "filter_wt.mt_unspliced.noncanonical_5_percent.csv",row.names = 1)
 all[which(all$mt %in% fil5per[,1]),48] <- NA
 
 all1 <- all
 
-#### add rbp motif data for prediction
-#deltamotif <- read.csv(file = "ATtRACT_RBP/delta_motif_original_3ss.csv")
-#all1 <- merge(all,deltamotif,by.x="mt",by.y="X")
 all1$wt_splicing_efficiency2 <- all1$wt_splicing_efficiency/100
 all1$mt_splicing_efficiency2 <- all1$mt_splicing_efficiency/100
 all1$delta_splicing_efficency2 <- all1$mt_splicing_efficiency2 - all1$wt_splicing_efficiency2
@@ -177,7 +168,7 @@ eval_results(eff_test_y, predictions_test, eff_test_x)
 
 coef(cv_lasso, s="lambda.min")
 co_eff <- coef(cv_lasso, s="lambda.min")
-write.csv(as.matrix(coef(cv_lasso, s="lambda.min")),"add_ag_wt_eff_model_coef_0512.csv")
+write.csv(as.matrix(coef(cv_lasso, s="lambda.min")),"add_ag_wt_eff_model_coef.csv")
 
 coef(cv_lasso, s = "lambda.min") %>% 
   as.matrix() %>% 
@@ -270,7 +261,7 @@ eval_results(eff_test_y, predictions_test, eff_test_x)
 
 
 coef(cv_lasso, s="lambda.min")
-write.csv(as.matrix(coef(cv_lasso, s="lambda.min")),"add_ag_no_wt_eff_model_coef_0519.csv")
+write.csv(as.matrix(coef(cv_lasso, s="lambda.min")),"add_ag_no_wt_eff_model_coef.csv")
 
 coef(cv_lasso, s = "lambda.min") %>% 
   as.matrix() %>% 
@@ -357,9 +348,9 @@ eval_results(eff_train_y, predictions_train, eff_train_x)
 predictions_test <- predict(cv_lasso, s = cv_lasso$lambda.min, newx = eff_test_x)
 eval_results(eff_test_y, predictions_test, eff_test_x)
 #RMSE   Rsquare
-#1 0.877296 0.5596478
+# 0.877296 0.5596478
 
 ### obtain coefficient
 coef(cv_lasso, s="lambda.min")
-write.csv(as.matrix(coef(cv_lasso, s="lambda.min")),"add_ag_no_wt_eff_model_coef_nostd2_0812.csv")
+write.csv(as.matrix(coef(cv_lasso, s="lambda.min")),"add_ag_no_wt_eff_model_coef_nostd.csv")
 

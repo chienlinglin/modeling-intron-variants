@@ -6,17 +6,15 @@ library(glmnet)   # implementing regularized regression approaches
 library(dplyr)    # basic data manipulation procedures
 library(ggplot2)  # plotting
 
-setwd("/Volumes/TOSHIBA EXT/yiting/Hung Lun/home2_cllin_20191223/aligncomrev_0707/fisher/summarize/gtag_only/")
 
 ####### new svm file
-all <- read.csv(file = "/Volumes/TOSHIBA EXT/for_server/new_svm_0719/hunglun_gtag_only_0_1.5_2-fold_candidates_maxent_snp_exct_cons7_alt_U2_novelGC_folds_motif5s_len_open_count_dG_pbp_dsvm.csv",row.names = 1,stringsAsFactors = F)
+all <- read.csv(file = "hunglun_gtag_only_0_1.5_2-fold_candidates_maxent_snp_exct_cons7_alt_U2_novelGC_folds_motif5s_len_open_count_dG_pbp_dsvm.csv",row.names = 1,stringsAsFactors = F)
 
-## from dr.lin added attributes
-#all <- read.csv(file = "by_cllin/20201026_factors_for_glm/hunglun_gtag_only_0_1.5_2-fold_candidates_maxent_svm_snp_ct_cons_alt_U2_novelgc_fold_corrected.csv",row.names = 1,stringsAsFactors = F)
+### remove multiple branchpoints
 all <- all[-which(is.na(all$wt.mt_3ss_distance.right.)),]
 
 ### remove objects with read counts less than 100
-over100 <- read.csv(file = "Recheck_100count/hunglun_wt.mt.count_recheck_100_count.csv",row.names = 1)
+over100 <- read.csv(file = "hunglun_wt.mt.count_recheck_100_count.csv",row.names = 1)
 over100$wt.mt <- NA
 over100$wt.mt[which(over100$wt_count==">100" & over100$mt_count==">100")] <- TRUE  # 4215
 
@@ -93,7 +91,7 @@ all$simp.variant_class[all$simp.variant_class %in% NA] <- "undefined"
 all$simp.variant_class <- factor(all$simp.variant_class, levels= c("undefined", "Uncertain significance", "Benign/Likely benign", 
                                                                    "Functional evidence", "Pathogenic/Likely pathogenic"))
 all$Anumber.10[all$Anumber.10 %in% NA] <- "no"
-fil5per <- read.csv(file = "Check_count_percentage/filter_wt.mt_unspliced.noncanonical_5_percent.csv",row.names = 1)
+fil5per <- read.csv(file = "filter_wt.mt_unspliced.noncanonical_5_percent.csv",row.names = 1)
 all[which(all$mt %in% fil5per[,1]),48] <- NA
 
 
@@ -190,7 +188,7 @@ eval_results(eff_test_y, predictions_test, eff_test_x)
 # 0.5384975 0.591142
 
 coef(cv_lasso, s="lambda.min")
-write.csv(as.matrix(coef(cv_lasso, s="lambda.min")),"non_ag_wt_eff_model_coef_0519.csv")
+write.csv(as.matrix(coef(cv_lasso, s="lambda.min")),"non_ag_wt_eff_model_coef.csv")
 
 
 
@@ -298,7 +296,7 @@ eval_results(eff_test_y, predictions_test, eff_test_x)
 #0.7442244 0.2190684
 
 coef(cv_lasso, s="lambda.min")
-write.csv(as.matrix(coef(cv_lasso, s="lambda.min")),"non_ag_wt_eff_model_coef_0519.csv")
+write.csv(as.matrix(coef(cv_lasso, s="lambda.min")),"non_ag_wt_eff_model_coef.csv")
 
 
 coef(cv_lasso, s = "lambda.min") %>% 
@@ -405,5 +403,5 @@ eval_results(eff_test_y, predictions_test, eff_test_x)
 
 ### obtain coefficient
 coef(cv_lasso, s="lambda.min")
-write.csv(as.matrix(coef(cv_lasso, s="lambda.min")),"non_ag_no_wt_eff_model_coef_0812_nostd2.csv")
+write.csv(as.matrix(coef(cv_lasso, s="lambda.min")),"non_ag_no_wt_eff_model_coef_nostd.csv")
 
